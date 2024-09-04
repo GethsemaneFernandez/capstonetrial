@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Report</title>
+    <link rel="stylesheet" href="balancesheetswithnewui.css">
+</head>
+<body>
+    <main class="content">
+        <header>
+            <h1>Monthly Report</h1><br>
+        </header>
+
+        <section>
+            <!-- January Table -->
+            <h1 class="labelbalancesheet">January</h1>
+            <table id="januaryTable" border="1" cellpadding="5">
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Cash Flow</th>
+                        <th>Assets</th>
+                        <th>Liabilities</th>
+                        <th>Revenue</th>
+                        <th>Net Income</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Existing rows here -->
+                    <!-- Input Row -->
+                    <tr>
+                        <td><input type="text" id="januaryWeek" placeholder="Enter Week"></td>
+                        <td><input type="text" id="januaryCashFlow" placeholder="Enter Cash Flow"></td>
+                        <td><input type="text" id="januaryAssets" placeholder="Enter Assets"></td>
+                        <td><input type="text" id="januaryLiabilities" placeholder="Enter Liabilities"></td>
+                        <td><input type="text" id="januaryRevenue" placeholder="Enter Revenue"></td>
+                        <td><input type="text" id="januaryNetIncome" placeholder="Enter Net Income"></td>
+                        <td><button onclick="addRow('january')">Add</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- February Table -->
+            <h1 class="labelbalancesheet">February</h1>
+            <table id="februaryTable" border="1" cellpadding="5">
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Cash Flow</th>
+                        <th>Assets</th>
+                        <th>Liabilities</th>
+                        <th>Revenue</th>
+                        <th>Net Income</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Existing rows here -->
+                    <!-- Input Row -->
+                    <tr>
+                        <td><input type="text" id="februaryWeek" placeholder="Enter Week"></td>
+                        <td><input type="text" id="februaryCashFlow" placeholder="Enter Cash Flow"></td>
+                        <td><input type="text" id="februaryAssets" placeholder="Enter Assets"></td>
+                        <td><input type="text" id="februaryLiabilities" placeholder="Enter Liabilities"></td>
+                        <td><input type="text" id="februaryRevenue" placeholder="Enter Revenue"></td>
+                        <td><input type="text" id="februaryNetIncome" placeholder="Enter Net Income"></td>
+                        <td><button onclick="addRow('february')">Add</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- March Table -->
+            <h1 class="labelbalancesheet">March</h1>
+            <table id="marchTable" border="1" cellpadding="5">
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Cash Flow</th>
+                        <th>Assets</th>
+                        <th>Liabilities</th>
+                        <th>Revenue</th>
+                        <th>Net Income</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Existing rows here -->
+                    <!-- Input Row -->
+                    <tr>
+                        <td><input type="text" id="marchWeek" placeholder="Enter Week"></td>
+                        <td><input type="text" id="marchCashFlow" placeholder="Enter Cash Flow"></td>
+                        <td><input type="text" id="marchAssets" placeholder="Enter Assets"></td>
+                        <td><input type="text" id="marchLiabilities" placeholder="Enter Liabilities"></td>
+                        <td><input type="text" id="marchRevenue" placeholder="Enter Revenue"></td>
+                        <td><input type="text" id="marchNetIncome" placeholder="Enter Net Income"></td>
+                        <td><button onclick="addRow('march')">Add</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
