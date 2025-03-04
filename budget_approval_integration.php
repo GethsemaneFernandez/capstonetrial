@@ -42,7 +42,8 @@ $data = json_decode($response, true);
         }
 
         .status-pending {
-            background-color: #ffc107; /* Yellow background for pending status */
+            background-color: #ffc107;
+            /* Yellow background for pending status */
             color: black;
         }
     </style>
@@ -201,7 +202,7 @@ $data = json_decode($response, true);
             const req_id = $(this).data('req_id');
             const action = $(this).hasClass('btnApprove') ? 'approve' : 'reject';
             const statusText = action === 'approve' ? 'Approve' : 'Reject';
-            
+
             // Set modal content based on the action
             $('#approvalModalLabel').text(`${statusText} Budget`);
             $('#submitApproval').text(statusText);
@@ -212,8 +213,8 @@ $data = json_decode($response, true);
             $('#submitApproval').off('click').on('click', function() {
                 const amount = $('#amount').val();
                 const remarks = $('#remarks').val();
-                
-                if(amount != "" && remarks != "") {
+
+                if (amount != "" && remarks != "") {
                     $.ajax({
                         url: 'https://logistic2.paradisehoteltomasmorato.com/api/budget-approval/process_update.php',
                         type: 'PUT',
