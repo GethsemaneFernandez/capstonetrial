@@ -17,6 +17,7 @@ curl_close($ch);
 
 // Process response
 $data = json_decode($response, true);
+
 ?>
 
 <!DOCTYPE html>
@@ -80,13 +81,16 @@ $data = json_decode($response, true);
                     <?php foreach ($data['data'] as $item): ?>
                         <tr>
                             <td>
-                                <?php if ($item['status'] == 'Pending') { ?>
-                                    <button class="btn btn-primary btnApprove" data-req_id="<?= $item['requisition_id'] ?>">Approve</button>
-                                    <button class="btn btn-danger btnReject" data-req_id="<?= $item['requisition_id'] ?>">Reject</button>
-                                <?php } else { ?>
-                                    <button class="btn btn-primary btnApprove" data-req_id="<?= $item['requisition_id'] ?>" disabled>Approve</button>
-                                    <button class="btn btn-danger btnReject" data-req_id="<?= $item['requisition_id'] ?>" disabled>Reject</button>
-                                <?php } ?>
+                                <?php if ($item['status'] == ""): ?>
+                                <button class="btn btn-primary btnApprove" data-req_id="<?= htmlspecialchars($item['requisition_id']) ?>">Approve</button>
+                                <button class="btn btn-danger btnReject" data-req_id="<?= htmlspecialchars($item['requisition_id']) ?>">Reject</button>
+                                <?php elseif ($item['status'] == "Approved"): ?>
+                                <button class="btn btn-primary btnApprove" data-req_id="<?= htmlspecialchars($item['requisition_id']) ?>" disabled>Approve</button>
+                                <button class="btn btn-danger btnReject" data-req_id="<?= htmlspecialchars($item['requisition_id']) ?>">Reject</button>
+                                <?php elseif ($item['status'] == "Rejected"): ?>
+                                <button class="btn btn-primary btnApprove" data-req_id="<?= htmlspecialchars($item['requisition_id']) ?>">Approve</button>
+                                <button class="btn btn-danger btnReject" data-req_id="<?= htmlspecialchars($item['requisition_id']) ?>" disabled>Reject</button>
+                                <?php endif; ?>
                             </td>
                             <td><?= htmlspecialchars($item['requisition_id'] ?? 'N/A') ?></td>
                             <td><?= htmlspecialchars($item['item_name'] ?? 'N/A') ?></td>
@@ -96,8 +100,8 @@ $data = json_decode($response, true);
                             <td><?= number_format($item['estimated_cost'] ?? 0, 2) ?></td>
                             <td><?= number_format($item['total_cost'] ?? 0, 2) ?></td>
                             <td>
-                                <?php if ($item['status'] == 'Pending') { ?>
-                                    <span class="badge status-pending"><?= htmlspecialchars($item['status'] ?? 'N/A') ?></span>
+                                <?php if ($item['status'] == '') { ?>
+                                    <span class="badge bg-secondary">Pending</span>
                                 <?php } else { ?>
                                     <span class="badge <?= ($item['status'] ?? '') === 'Approved' ? 'bg-success' : 'bg-danger' ?>">
                                         <?= htmlspecialchars($item['status'] ?? 'N/A') ?>
@@ -132,33 +136,7 @@ $data = json_decode($response, true);
         </table>
     </div>
 
-    <!-- Modal for Approval/Rejection -->
-    <div class="modal fade" id="approvalModal" tabindex="-1" aria-labelledby="approvalModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="approvalModalLabel">Approve or Reject Budget</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="approvalForm">
-                        <div class="mb-3">
-                            <label for="amount" class="form-label">Amount</label>
-                            <input type="number" class="form-control" id="amount" name="amount" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="remarks" class="form-label">Remarks</label>
-                            <textarea class="form-control" id="remarks" name="remarks" required></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="submitApproval">Submit</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="responseModalApproval"></div>
 
     <!-- Required Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -198,58 +176,28 @@ $data = json_decode($response, true);
             });
         });
 
-        $('.btnApprove, .btnReject').click(function() {
-            const req_id = $(this).data('req_id');
-            const action = $(this).hasClass('btnApprove') ? 'approve' : 'reject';
-            const statusText = action === 'approve' ? 'Approve' : 'Reject';
-
-            // Set modal content based on the action
-            $('#approvalModalLabel').text(`${statusText} Budget`);
-            $('#submitApproval').text(statusText);
-
-            $('#approvalModal').modal('show'); // Show the modal
-
-            // When Submit is clicked
-            $('#submitApproval').off('click').on('click', function() {
-                const amount = $('#amount').val();
-                const remarks = $('#remarks').val();
-
-                if (amount != "" && remarks != "") {
-                    $.ajax({
-                        url: 'https://logistic2.paradisehoteltomasmorato.com/api/budget-approval/process_update.php',
-                        type: 'PUT',
-                        headers: {
-                            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.e30.Wn2PDfdI1zpEGcXool1YdXhVyCJVv7Ea07doKnxB4Hw',
-                            'Content-Type': 'application/json'
-                        },
-                        data: JSON.stringify({
-                            requisition_id: req_id,
-                            remarks: remarks,
-                            amount: amount,
-                            status: action === 'approve' ? 'Approved' : 'Rejected'
-                        }),
-                        success: function(response) {
-                            try {
-                                const data = JSON.parse(response);
-                                if (data.success) {
-                                    alert(data.message || 'Action successful');
-                                } else {
-                                    alert(data.message || 'Response failed');
-                                }
-                                location.reload();
-                            } catch (e) {
-                                alert('Invalid JSON response: ' + response);
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            alert('Server error: ' + xhr.status + ' ' + error);
-                            console.error('AJAX Error:', xhr, status, error);
-                        }
-                    });
-                } else {
-                    alert("Please fill in both Amount and Remarks");
-                }
+        $('.btnApprove').click(function() {
+            var req_id = $(this).data('req_id');
+            $.post('modal_approval.php', {
+                req_id: req_id,
+                action: 'Approve'
+            }, function(res) {
+                $('#responseModalApproval').html(res); // Set the modal content to the response
+                $('#approvalModal').modal('show'); // Show the modal
             });
+
+        });
+
+        $('.btnReject').click(function() {
+            var req_id = $(this).data('req_id');
+            $.post('modal_approval.php', {
+                req_id: req_id,
+                action: 'Reject'
+            }, function(res) {
+                $('#responseModalApproval').html(res); // Set the modal content to the response
+                $('#approvalModal').modal('show'); // Show the modal
+            });
+
         });
     </script>
 </body>
